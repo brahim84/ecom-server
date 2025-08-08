@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-
+require('dotenv').config();
 const prisma = new PrismaClient();
 
 const demoProducts = [
@@ -213,7 +213,7 @@ const demoCategories = [
   }
 ];
 
-async function insertDemoData() {
+async function insertDemoData2() {
   
   for (const category of demoCategories) {
     await prisma.category.create({
@@ -230,7 +230,7 @@ async function insertDemoData() {
   console.log("Demo products inserted successfully!");
 }
 
-insertDemoData()
+insertDemoData2()
   .catch((error) => {
     console.error(error);
     process.exit(1);

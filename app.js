@@ -12,8 +12,10 @@ const slugRouter = require("./routes/slugs");
 const orderProductRouter = require('./routes/customer_order_product');
 const wishlistRouter = require('./routes/wishlist');
 const path = require("path");
+const verifyToken = require('./middleware/auth');
 
 var cors = require("cors");
+require('dotenv').config();
 
 const app = express();
 
@@ -28,13 +30,13 @@ app.use(
 app.use(fileUpload());
 
 app.use("/api/products", productsRouter);
-app.use("/api/categories", categoryRouter);
+app.use("/api/categories", verifyToken, categoryRouter);
 app.use("/api/images", productImagesRouter);
 app.use("/api/main-image", mainImageRouter);
-app.use("/api/users", userRouter);
+app.use("/api/users", verifyToken, userRouter);
 app.use("/api/search", searchRouter);
-app.use("/api/orders", orderRouter);
-app.use('/api/order-product', orderProductRouter);
+app.use("/api/orders", verifyToken, orderRouter);
+app.use('/api/order-product', verifyToken, orderProductRouter);
 app.use("/api/slugs", slugRouter);
 app.use("/api/wishlist", wishlistRouter);
 

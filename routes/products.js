@@ -1,4 +1,5 @@
 const express = require("express");
+const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 const {
@@ -12,11 +13,21 @@ const {
 
 router.route("/").get(getAllProducts).post(createProduct);
 
+// Public: Anyone can list and view products
+router.get("/", getAllProducts);
+router.get("/:id", getProductById);
+router.get("/search", searchProducts);
 
-router
-  .route("/:id")
-  .get(getProductById)
-  .put(updateProduct)
-  .delete(deleteProduct);
+// Protected: Only admin can create/update/delete
+router.post("/", verifyToken, createProduct);
+router.put("/:id", verifyToken, updateProduct);
+router.delete("/:id", verifyToken, deleteProduct);
+
+
+// router
+//   .route("/:id")
+//   .get(getProductById)
+//   .put(updateProduct)
+//   .delete(deleteProduct);
 
 module.exports = router;

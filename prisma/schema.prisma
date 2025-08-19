@@ -49,12 +49,12 @@ model Customer_order {
   lastname    String
   phone       String
   email       String
-  company     String
+  company     String?
   adress      String
   apartment   String
   postalCode  String
   dateTime    DateTime?                @default(now())
-  status      String
+  status      String?
   city        String
   country     String
   orderNotice String?

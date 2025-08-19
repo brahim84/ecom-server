@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  console.log("verifyToken:", req.headers);
+  //console.log("verifyToken:", req.headers);
   const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
   if (!token) return res.status(401).json({ message: 'Access token missing' });
 

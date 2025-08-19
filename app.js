@@ -35,8 +35,8 @@ app.use("/api/images", productImagesRouter);
 app.use("/api/main-image", mainImageRouter);
 app.use("/api/users", verifyToken, userRouter);
 app.use("/api/search", searchRouter);
-app.use("/api/orders", verifyToken, orderRouter);
-app.use('/api/order-product', verifyToken, orderProductRouter);
+app.use("/api/orders", orderRouter);
+app.use('/api/order-product', orderProductRouter);
 app.use("/api/slugs", slugRouter);
 app.use("/api/wishlist", wishlistRouter);
 

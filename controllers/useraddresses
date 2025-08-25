@@ -1,0 +1,63 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
+exports.list = async (req, res) => {
+  const userId = req.user.id;
+  const addrs = await prisma.userAddress.findMany({
+    where: { userId },
+    orderBy: [{ isDefaultShipping: "desc" }, { createdAt: "desc" }],
+  });
+  res.json(addrs);
+};
+
+exports.create = async (req, res) => {
+  const userId = req.user.id;
+  const data = req.body;
+
+  await prisma.$transaction(async (tx) => {
+    if (data.isDefaultShipping) {
+      await tx.userAddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } });
+    }
+    if (data.isDefaultBilling) {
+      await tx.userAddress.updateMany({ where: { userId, isDefaultBilling: true }, data: { isDefaultBilling: false } });
+    }
+  });
+
+  const created = await prisma.userAddress.create({ data: { ...data, userId } });
+  res.status(201).json(created);
+};
+
+exports.update = async (req, res) => {
+  const userId = req.user.id;
+  const id = req.params.id;
+  const data = req.body;
+
+  const addr = await prisma.userAddress.findUnique({ where: { id } });
+  if (!addr || addr.userId !== userId) return res.status(404).json({ error: "Not found" });
+
+  await prisma.$transaction(async (tx) => {
+    if (data.isDefaultShipping) {
+      await tx.userAddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } });
+    }
+    if (data.isDefaultBilling) {
+      await tx.userAddress.updateMany({ where: { userId, isDefaultBilling: true }, data: { isDefaultBilling: false } });
+    }
+  });
+
+  const updated = await prisma.userAddress.update({ where: { id }, data });
+  res.json(updated);
+};
+
+exports.setDefault = async (req, res) => {
+  const userId = req.user.id;
+  const id = req.params.id;
+  const addr = await prisma.userAddress.findUnique({ where: { id } });
+  if (!addr || addr.userId !== userId) return res.status(404).json({ error: "Not found" });
+
+  await prisma.$transaction([
+    prisma.userAddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } }),
+    prisma.userAddress.update({ where: { id }, data: { isDefaultShipping: true } }),
+  ]);
+
+  res.json({ ok: true });
+};

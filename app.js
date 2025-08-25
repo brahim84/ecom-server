@@ -11,6 +11,8 @@ const orderRouter = require("./routes/customer_orders");
 const slugRouter = require("./routes/slugs");
 const orderProductRouter = require('./routes/customer_order_product');
 const wishlistRouter = require('./routes/wishlist');
+const userAddressRouter = require("./routes/userAddress");
+const userProfileRouter = require("./routes/userProfile");
 const path = require("path");
 const verifyToken = require('./middleware/auth');
 
@@ -39,7 +41,8 @@ app.use("/api/orders", orderRouter);
 app.use('/api/order-product', orderProductRouter);
 app.use("/api/slugs", slugRouter);
 app.use("/api/wishlist", wishlistRouter);
-
+app.use("/api/user-address", userAddressRouter)
+app.use("/api/user-profile", userProfileRouter);
 
 app.use(express.static(path.join(process.cwd(), "public")));
 

@@ -35,7 +35,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/categories", verifyToken, categoryRouter);
 app.use("/api/images", productImagesRouter);
 app.use("/api/main-image", mainImageRouter);
-app.use("/api/users", verifyToken, userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/search", searchRouter);
 app.use("/api/orders", orderRouter);
 app.use('/api/order-product', orderProductRouter);

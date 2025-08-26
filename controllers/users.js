@@ -11,6 +11,64 @@ async function getAllUsers(request, response) {
   }
 }
 
+async function register(req, res) {
+  try {
+    const { email, password, role, firstName, lastName, phone, autoLogin } = req.body;
+
+    // Basic validation
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    // Check if email exists
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return res.status(409).json({ error: "Email already in use" });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user + profile in one transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          role: role || "user",
+        },
+      });
+
+      // Create profile only if any profile fields provided
+      let profile = null;
+      if (firstName || lastName || phone) {
+        profile = await tx.userProfile.create({
+          data: {
+            userId: user.id,
+            firstName: firstName || null,
+            lastName: lastName || null,
+            phone: phone || null,
+          },
+        });
+      }
+
+      return { user, profile };
+    });
+
+    // Prepare safe response
+    const safeUser = {
+      id: result.user.id,
+      email: result.user.email,
+      role: result.user.role,
+    };
+    return res.status(201).json({ user: safeUser });
+  } catch (err) {
+    console.error("Register error:", err);
+    return res.status(500).json({ error: "Failed to register user" });
+  }
+};
+
+
 async function createUser(request, response) {
   try {
     const { email, password, role } = request.body;
@@ -104,6 +162,7 @@ async function getUserByEmail(request, response) {
 }
 
 module.exports = {
+  register,
   createUser,
   updateUser,
   deleteUser,

@@ -1,9 +1,11 @@
 const express = require('express');
+const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
 const {
     getUser,
+    register,
     createUser,
     updateUser,
     deleteUser,
@@ -12,16 +14,18 @@ const {
   } = require('../controllers/users');
 
   router.route('/')
-  .get(getAllUsers)
+  .get(verifyToken, getAllUsers)
   .post(createUser);
 
   router.route('/:id')
-  .get(getUser)
-  .put(updateUser) 
-  .delete(deleteUser);
+  .get(verifyToken, getUser)
+  .put(verifyToken, updateUser) 
+  .delete(verifyToken, deleteUser);
 
   router.route('/email/:email')
-  .get(getUserByEmail);
+  .get(verifyToken, getUserByEmail);
 
+  router.route('/register')
+  .post(register);
 
   module.exports = router;

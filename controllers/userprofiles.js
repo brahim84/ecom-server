@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 exports.getProfile = async (req, res) => {
   try {
     const userId = req.user.id; // populated by verifyToken
-    const profile = await prisma.userProfile.findUnique({
+    const profile = await prisma.userprofile.findUnique({
       where: { userId },
       select: {
         firstName: true,
@@ -37,7 +37,7 @@ exports.upsertProfile = async (req, res) => {
     const userId = req.user.id;
     const { firstName, lastName, phone } = req.body;
 
-    const updated = await prisma.userProfile.upsert({
+    const updated = await prisma.userprofile.upsert({
       where: { userId },
       update: { firstName, lastName, phone },
       create: { userId, firstName, lastName, phone },

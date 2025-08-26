@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 exports.list = async (req, res) => {
   const userId = req.user.id;
-  const addrs = await prisma.userAddress.findMany({
+  const addrs = await prisma.useraddress.findMany({
     where: { userId },
     orderBy: [{ isDefaultShipping: "desc" }, { createdAt: "desc" }],
   });
@@ -16,14 +16,14 @@ exports.create = async (req, res) => {
 
   await prisma.$transaction(async (tx) => {
     if (data.isDefaultShipping) {
-      await tx.userAddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } });
+      await tx.useraddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } });
     }
     if (data.isDefaultBilling) {
-      await tx.userAddress.updateMany({ where: { userId, isDefaultBilling: true }, data: { isDefaultBilling: false } });
+      await tx.useraddress.updateMany({ where: { userId, isDefaultBilling: true }, data: { isDefaultBilling: false } });
     }
   });
 
-  const created = await prisma.userAddress.create({ data: { ...data, userId } });
+  const created = await prisma.useraddress.create({ data: { ...data, userId } });
   res.status(201).json(created);
 };
 
@@ -32,31 +32,31 @@ exports.update = async (req, res) => {
   const id = req.params.id;
   const data = req.body;
 
-  const addr = await prisma.userAddress.findUnique({ where: { id } });
+  const addr = await prisma.useraddress.findUnique({ where: { id } });
   if (!addr || addr.userId !== userId) return res.status(404).json({ error: "Not found" });
 
   await prisma.$transaction(async (tx) => {
     if (data.isDefaultShipping) {
-      await tx.userAddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } });
+      await tx.useraddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } });
     }
     if (data.isDefaultBilling) {
-      await tx.userAddress.updateMany({ where: { userId, isDefaultBilling: true }, data: { isDefaultBilling: false } });
+      await tx.useraddress.updateMany({ where: { userId, isDefaultBilling: true }, data: { isDefaultBilling: false } });
     }
   });
 
-  const updated = await prisma.userAddress.update({ where: { id }, data });
+  const updated = await prisma.useraddress.update({ where: { id }, data });
   res.json(updated);
 };
 
 exports.setDefault = async (req, res) => {
   const userId = req.user.id;
   const id = req.params.id;
-  const addr = await prisma.userAddress.findUnique({ where: { id } });
+  const addr = await prisma.useraddress.findUnique({ where: { id } });
   if (!addr || addr.userId !== userId) return res.status(404).json({ error: "Not found" });
 
   await prisma.$transaction([
-    prisma.userAddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } }),
-    prisma.userAddress.update({ where: { id }, data: { isDefaultShipping: true } }),
+    prisma.useraddress.updateMany({ where: { userId, isDefaultShipping: true }, data: { isDefaultShipping: false } }),
+    prisma.useraddress.update({ where: { id }, data: { isDefaultShipping: true } }),
   ]);
 
   res.json({ ok: true });

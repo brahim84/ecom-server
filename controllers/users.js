@@ -42,7 +42,7 @@ async function register(req, res) {
       // Create profile only if any profile fields provided
       let profile = null;
       if (firstName || lastName || phone) {
-        profile = await tx.userProfile.create({
+        profile = await tx.userprofile.create({
           data: {
             userId: user.id,
             firstName: firstName || null,

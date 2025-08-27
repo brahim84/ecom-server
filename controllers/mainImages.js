@@ -19,7 +19,7 @@ try {
     const originalName = uploadedFile.name.replace(/\s+/g, "_");
     const newFileName = `${randomSuffix}_${originalName}`;
     
-    const uploadDir = path.join(process.cwd(), "public")
+    const uploadDir = path.join(process.cwd(), process.env.UPLOADS_DIR)
     const uploadPath = path.join(uploadDir, newFileName)
 
     uploadedFile.mv(uploadPath, (err) => {

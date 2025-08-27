@@ -44,7 +44,7 @@ model customer_order {
   line2           String
   paymentIntentId String?                  @unique(map: "Customer_order_paymentIntentId_key")
   stripeSessionId String?                  @unique(map: "Customer_order_stripeSessionId_key")
-  updatedAt       DateTime
+  updatedAt       DateTime                 @default(now())
   userId          String?
   user            user?                    @relation(fields: [userId], references: [id], map: "Customer_order_userId_fkey")
   products        customer_order_product[]
@@ -102,7 +102,7 @@ model useraddress {
   isDefaultShipping Boolean  @default(false)
   isDefaultBilling  Boolean  @default(false)
   createdAt         DateTime @default(now())
-  updatedAt         DateTime
+  updatedAt         DateTime @default(now())
   user              user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserAddress_userId_fkey")
 
   @@index([userId], map: "UserAddress_userId_idx")

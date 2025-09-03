@@ -32,7 +32,7 @@ app.use(
 app.use(fileUpload());
 
 app.use("/api/products", productsRouter);
-app.use("/api/categories", verifyToken, categoryRouter);
+app.use("/api/categories", categoryRouter);
 app.use("/api/images", productImagesRouter);
 app.use("/api/main-image", mainImageRouter);
 app.use("/api/users", userRouter);
